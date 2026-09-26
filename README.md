@@ -1,106 +1,101 @@
 # Amit Yadav — Data Engineer Portfolio
 
-A production-oriented portfolio for a Data Engineer and Data & AI Consultant. Built with Next.js App Router, React, TypeScript, and Tailwind CSS.
+Personal portfolio for Amit Yadav, Data Engineer and Data & AI Consultant. It showcases case studies, services, and experience in cloud data platforms, ETL/ELT pipelines, analytics, and privacy-safe data systems.
 
-## Site map
+## Tech stack
 
-- `/` — Hero, technology credibility, featured work, services, process, and CTA
-- `/about` — Bio, working style, grouped skills, and placeholder experience
-- `/projects` — Searchable/filterable project index
-- `/projects/[slug]` — Statically generated case studies with JSON-LD
-- `/services` — Packages, audience, timelines, deliverables, and FAQ
-- `/contact` — Accessible contact form, Calendly, email, and social links
-- `/api/contact` — Vercel-compatible Resend email route
+- [Next.js](https://nextjs.org) (App Router) with React and TypeScript
+- Tailwind CSS
+- ESLint and Prettier
+- Resend for contact form email delivery
+- Plausible for optional, privacy-friendly analytics
 
-Core components live in `src/components`; site configuration is in `src/lib/site.ts`; typed case-study content is in `src/lib/projects.ts`.
+## Features
 
-## Local setup
+- Responsive, dark-first design with reduced-motion support
+- Searchable case studies, filterable by cloud, platform, and project type
+- Statically generated case study pages
+- Contact form with validation, spam honeypot, and rate limiting
+- SEO metadata, Open Graph and Twitter cards, JSON-LD, sitemap, and robots.txt
+- Accessible navigation, labelled form controls, and visible focus states
 
-Requirements: Node.js 20.9+ and npm 10+.
+## Pages
+
+| Route | Content |
+| --- | --- |
+| `/` | Introduction, tech stack, featured projects, services, and process |
+| `/about` | Background, working style, skills, and experience |
+| `/projects` | Case study index with search and filters |
+| `/projects/[slug]` | Case study: problem, approach, architecture, and results |
+| `/services` | Services, typical timelines, and FAQ |
+| `/contact` | Contact form, booking link, email, and social links |
+
+## Project structure
+
+```text
+src/
+├── app/            # Routes, layout, API route, sitemap, and robots
+├── components/     # Header, footer, project cards, filters, and contact form
+└── lib/
+    ├── projects.ts # Typed case study content
+    └── site.ts     # Site details, navigation, and links
+```
+
+## Getting started
+
+Requires Node.js 20.9 or later.
 
 ```bash
 npm install
-copy .env.example .env.local
+cp .env.example .env.local
 npm run dev
 ```
 
-Open `http://localhost:3000`. Before deployment, run:
+Open [http://localhost:3000](http://localhost:3000).
 
-```bash
-npm run typecheck
-npm run lint
-npm run format:check
-npm run build
-```
+### Scripts
 
-This environment did not have Node.js installed when the codebase was created, so dependency installation and build verification must be run on a machine with Node.js 20.9+.
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | Run the TypeScript compiler |
+| `npm run format` | Format files with Prettier |
 
 ## Environment variables
 
-| Variable | Purpose |
+| Variable | Description |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Canonical production URL, without a trailing slash |
-| `NEXT_PUBLIC_CALENDLY_URL` | Booking page |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Optional Plausible domain; no script loads when blank |
-| `NEXT_PUBLIC_CONTACT_EMAIL` | Public direct-contact email |
-| `RESEND_API_KEY` | Server-only Resend API key |
-| `CONTACT_TO_EMAIL` | Verified recipient for form submissions |
-| `CONTACT_FROM_EMAIL` | Verified Resend sender |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL |
+| `NEXT_PUBLIC_CALENDLY_URL` | Booking page URL |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Public contact email |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Plausible domain; leave blank to disable analytics |
+| `RESEND_API_KEY` | Resend API key (server-only) |
+| `CONTACT_TO_EMAIL` | Recipient for contact form messages |
+| `CONTACT_FROM_EMAIL` | Verified sender address |
 
-Never expose `RESEND_API_KEY` with a `NEXT_PUBLIC_` prefix. In Resend, verify your sending domain before changing the default onboarding sender.
+## Updating content
 
-The contact endpoint includes field validation, a honeypot, and best-effort in-memory throttling (five requests per IP per ten minutes). Serverless instances do not share memory, so production abuse protection should use Vercel WAF/rate limiting or a shared store such as Upstash Redis.
+- **Case studies:** add or edit entries in `src/lib/projects.ts`. Each project needs a unique `slug`; its page and sitemap entry are generated automatically.
+- **Site details and links:** update `src/lib/site.ts`.
+- **Resume:** place the PDF at `public/amit-yadav-resume.pdf`.
 
-## Editing projects
+## Deployment
 
-Case studies use a strict `Project` TypeScript type in `src/lib/projects.ts`. Add an object to the exported `projects` array and provide a unique URL-safe `slug`; static routes and sitemap entries are generated automatically.
+The site is designed for [Vercel](https://vercel.com):
 
-This implementation deliberately uses typed local TypeScript content rather than raw MDX. It avoids a runtime parser, keeps filters type-safe, and is ideal for the current structured case-study layout. If editorial freedom becomes important, add `@next/mdx` or Contentlayer and retain the same frontmatter fields as the `Project` type.
+1. Import this repository into Vercel.
+2. Add the environment variables listed above.
+3. Deploy, then connect a custom domain if needed and update `NEXT_PUBLIC_SITE_URL`.
 
-All metrics currently use clearly qualified target ranges. Replace them only with approved, defensible outcomes.
+## Design
 
-## Replacing placeholders
+- **Colors:** dark background `#070b14`, surface `#0d1422`, text `#f4f7fb`, teal accent `#5eead4`, violet accent `#8b5cf6`
+- **Typography:** Geist and Geist Mono
+- **Layout:** fluid spacing, card-based sections, and a mobile-first responsive grid
 
-1. Replace Calendly, email, GitHub, and LinkedIn values in `.env.local` and `src/lib/site.ts`.
-2. Add the real PDF as `public/amit-yadav-resume.pdf`.
-3. Replace `[Company]` and `[Dates]` on the About page with resume-approved details.
-4. Replace the CSS architecture flow on each project with an optimized SVG or WebP. For raster files, use `next/image` with explicit dimensions.
-5. Add an Open Graph image at `src/app/opengraph-image.png` or implement a generated `opengraph-image.tsx`.
-6. Review every anonymized case study and range before publishing.
+## License
 
-## Deployment to Vercel
-
-1. Push the project to GitHub, GitLab, or Bitbucket.
-2. Import the repository in Vercel; it will detect Next.js.
-3. Add production environment variables in **Project Settings → Environment Variables**.
-4. Deploy and test the contact form, metadata, `/sitemap.xml`, and `/robots.txt`.
-5. Add the custom domain under **Settings → Domains** and update `NEXT_PUBLIC_SITE_URL`.
-6. Configure the DNS records Vercel provides, then redeploy so canonical and structured URLs use the final domain.
-
-## Design system
-
-Default palette: **Midnight Signal** — background `#070b14`, surfaces `#0d1422` / `#111b2d`, text `#f4f7fb`, muted text `#9dabc0`, teal accent `#5eead4`, violet secondary `#8b5cf6`.
-
-Alternative future palettes:
-
-- **Graphite + Electric Blue:** `#090b10`, `#151922`, `#60a5fa`, `#c084fc`
-- **Deep Navy + Lime:** `#060b16`, `#101a2f`, `#bef264`, `#22d3ee`
-
-Typography uses Geist with Geist Mono accents via `next/font`. Spacing is fluid using `clamp()`. Cards share a subtle border, one-pixel accent highlight, rounded corners, and restrained hover elevation. Buttons have at least a 44px target. Focus is always visible, landmarks/headings are semantic, and motion is disabled under `prefers-reduced-motion`.
-
-## Analytics and privacy
-
-Set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` to load Plausible after hydration. Leave it blank for no analytics. If using Plausible Cloud, confirm your data-processing and cookie requirements for target regions; the basic script is commonly deployed without cookies, but compliance remains site-owner responsibility.
-
-## Next steps
-
-- [ ] Add approved resume, headshot, logo, project screenshots, and social URLs
-- [ ] Add a generated Open Graph image and favicon set
-- [ ] Validate copy and measurable outcomes against the final resume
-- [ ] Run Lighthouse and axe against production on mobile and desktop
-- [ ] Add durable distributed rate limiting and CAPTCHA only if abuse warrants it
-- [ ] Add a CMS or MDX pipeline when non-developers need editing access
-- [ ] Add a blog for technical writing and long-tail SEO
-- [ ] Enable testimonials only after written approval
-- [ ] Add consent-aware analytics events for calls, resume downloads, and form success
-- [ ] Add Playwright smoke tests and CI quality gates
+© Amit Yadav. All rights reserved.
